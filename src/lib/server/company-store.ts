@@ -6,6 +6,12 @@ export type CompanySettings = {
 	logoUrl: string;
 	/** Teks di bawah nama di sidebar admin (mis. "Admin Panel"). */
 	adminSidebarSubtitle: string;
+	/** Google Analytics 4 Measurement ID (mis. G-XXXXXXX). */
+	ga4MeasurementId: string;
+	/** Meta Pixel ID (angka). */
+	metaPixelId: string;
+	/** Master switch untuk tracking analytics publik. */
+	trackingEnabled: boolean;
 	waNumber: string;
 	officePhone: string;
 	email: string;
@@ -20,6 +26,9 @@ const DEFAULT_SETTINGS: CompanySettings = {
 	companyName: '',
 	logoUrl: '',
 	adminSidebarSubtitle: '',
+	ga4MeasurementId: '',
+	metaPixelId: '',
+	trackingEnabled: false,
 	waNumber: '',
 	officePhone: '',
 	email: '',

@@ -8,7 +8,8 @@
 		createdAt = '',
 		expiresAt = '',
 		officeHours = '',
-		priorityImage = false
+		priorityImage = false,
+		staggerIndex = 0
 	}: {
 		title: string;
 		imageUrl: string;
@@ -19,6 +20,7 @@
 		expiresAt?: string;
 		officeHours?: string;
 		priorityImage?: boolean;
+		staggerIndex?: number;
 	} = $props();
 
 	const brand = $derived((companyName ?? '').trim() || 'Anmar Binawisata');
@@ -32,12 +34,12 @@
 		imageLoaded = false;
 	});
 
-	const waLink = $derived.by(() => {
-		const clean = String(waNumber ?? '').replace(/[^\d]/g, '');
-		if (!clean) return '#';
-		const text = encodeURIComponent(`Halo ${brand}, saya tertarik dengan promo: ${title}`);
-		return `https://wa.me/${clean}?text=${text}`;
-	});
+	const waClean = $derived(String(waNumber ?? '').replace(/[^\d]/g, ''));
+	const waLink = $derived(
+		waClean === ''
+			? '#'
+			: `https://wa.me/${waClean}?text=${encodeURIComponent(`Halo ${brand}, saya tertarik dengan promo: ${title}`)}`
+	);
 
 	const postedLabel = $derived.by(() => {
 		const d = new Date(createdAt);
@@ -54,7 +56,7 @@
 	const imgAlt = $derived(`Promo: ${title}`);
 </script>
 
-<article class="post">
+<article class="post" style="--stagger:{staggerIndex}">
 	<header class="post-header">
 		<div class="avatar-wrap" aria-hidden="true">
 			{#if logo}
@@ -113,12 +115,33 @@
 
 <style>
 	.post {
+		--stagger: 0;
 		background: var(--white);
 		border: 1px solid var(--border);
-		border-radius: 10px;
+		border-radius: var(--radius-md);
 		margin-bottom: 0;
-		box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
+		box-shadow: var(--shadow-soft);
 		overflow: hidden;
+		animation: post-enter 0.62s cubic-bezier(0.22, 1, 0.36, 1) both;
+		animation-delay: calc(var(--stagger) * 72ms);
+		transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.2s ease;
+	}
+
+	.post:hover {
+		transform: translateY(-2px);
+		box-shadow: var(--shadow-focus);
+		border-color: rgba(6, 78, 59, 0.22);
+	}
+
+	@keyframes post-enter {
+		from {
+			opacity: 0;
+			transform: translateY(14px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 
 	.post-header {
@@ -160,9 +183,9 @@
 	}
 
 	.username {
-		font-weight: 800;
-		font-size: 0.92rem;
-		letter-spacing: -0.02em;
+		font-weight: 780;
+		font-size: 0.91rem;
+		letter-spacing: var(--tracking-normal);
 		line-height: 1.2;
 	}
 
@@ -175,8 +198,8 @@
 	}
 
 	.posted {
-		font-size: 0.78rem;
-		font-weight: 600;
+		font-size: 0.76rem;
+		font-weight: 620;
 		color: var(--text-light);
 	}
 
@@ -190,6 +213,17 @@
 		background: rgba(6, 78, 59, 0.1);
 		color: var(--primary);
 		border: 1px solid rgba(6, 78, 59, 0.2);
+		animation: badge-soft 2.8s ease-in-out infinite;
+	}
+
+	@keyframes badge-soft {
+		0%,
+		100% {
+			box-shadow: 0 0 0 0 rgba(6, 78, 59, 0);
+		}
+		50% {
+			box-shadow: 0 0 0 3px rgba(6, 78, 59, 0.12);
+		}
 	}
 
 	.media-container {
@@ -232,11 +266,15 @@
 		position: relative;
 		z-index: 2;
 		opacity: 0;
-		transition: opacity 0.35s ease;
+		transition: opacity 0.35s ease, transform 0.45s ease;
 	}
 
 	.media-img--loaded {
 		opacity: 1;
+	}
+
+	.post:hover .media-img--loaded {
+		transform: scale(1.02);
 	}
 
 	.post-content {
@@ -248,11 +286,11 @@
 
 	.title {
 		font-family: var(--font-display);
-		font-size: 1.05rem;
-		font-weight: 700;
-		letter-spacing: -0.02em;
+		font-size: 1.02rem;
+		font-weight: 680;
+		letter-spacing: var(--tracking-tight);
 		margin: 0;
-		line-height: 1.35;
+		line-height: 1.33;
 		color: var(--text);
 	}
 
@@ -260,9 +298,9 @@
 		background-color: var(--primary);
 		color: var(--white);
 		padding: 0.75rem 0.85rem;
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		font-weight: 800;
-		font-size: 0.9rem;
+		font-size: 0.88rem;
 		width: 100%;
 		border: none;
 		cursor: pointer;
@@ -287,11 +325,34 @@
 
 	.cta-note {
 		margin: 0;
-		font-size: 0.78rem;
-		font-weight: 600;
+		font-size: 0.76rem;
+		font-weight: 620;
 		color: var(--text-light);
-		line-height: 1.4;
+		line-height: 1.38;
 		text-align: center;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.post {
+			animation: none;
+			transition: none;
+		}
+
+		.post:hover {
+			transform: none;
+		}
+
+		.post:hover .media-img--loaded {
+			transform: none;
+		}
+
+		.badge {
+			animation: none;
+		}
+
+		.media-img {
+			transition: opacity 0.2s ease;
+		}
 	}
 
 	@media (max-width: 600px) {
@@ -299,6 +360,11 @@
 			border-left: none;
 			border-right: none;
 			border-radius: 0;
+			box-shadow: none;
+		}
+
+		.post:hover {
+			transform: none;
 			box-shadow: none;
 		}
 	}

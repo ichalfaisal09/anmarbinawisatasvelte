@@ -1,27 +1,34 @@
 <script lang="ts">
-	let {
-		companyName = '',
-		logoUrl = '/logo.svg'
-	}: { companyName?: string; logoUrl?: string } = $props();
+	import { page } from '$app/state';
+	import { IconDocumentLines, IconHomeFilled } from '$lib/components/icons';
+	import { ROUTE, normalizePathname } from '$lib/routes';
+
+	let { companyName = '', logoUrl = '/logo.svg' }: { companyName?: string; logoUrl?: string } =
+		$props();
 
 	const displayName = $derived((companyName ?? '').trim() || 'Anmar Binawisata');
 	const displayLogo = $derived((logoUrl ?? '').trim() || '/logo.svg');
+
+	const path = $derived(normalizePathname(page.url.pathname));
+	const isHome = $derived(path === ROUTE.HOME);
 </script>
 
 <header class="header">
 	<div class="header-inner">
-		<a class="brand" href="/" aria-label={displayName}>
+		<a class="brand" href={ROUTE.HOME} aria-label={displayName}>
 			<img class="brand-logo" src={displayLogo} alt="" width="28" height="28" />
 			<span class="brand-name">{displayName}</span>
 		</a>
 		<div class="nav-minimal">
-			<a href="/" aria-label="Home">
-				<svg fill="currentColor" viewBox="0 0 24 24" width="24" height="24">
-					<path
-						d="M22 23h-6.001a1 1 0 0 1-1-1v-5.657a2.346 2.346 0 0 0-2.344-2.343h-.621A2.346 2.346 0 0 0 9.69 16.343V22a1 1 0 0 1-1 1H2.69a1 1 0 0 1-1-1V10.735a1 1 0 0 1 .43-.822L11.061 2.97a1.583 1.583 0 0 1 1.878 0l8.941 6.943a1 1 0 0 1 .43.822V22a1 1 0 0 1-1 1Z"
-					></path>
-				</svg>
-			</a>
+			{#if isHome}
+				<a class="nav-ic" href={ROUTE.INFORMASI} aria-label="Informasi">
+					<IconDocumentLines size={24} />
+				</a>
+			{:else}
+				<a class="nav-ic" href={ROUTE.HOME} aria-label="Beranda — galeri promo">
+					<IconHomeFilled size={24} />
+				</a>
+			{/if}
 		</div>
 	</div>
 </header>
@@ -33,7 +40,8 @@
 		left: 0;
 		width: 100%;
 		height: 60px;
-		background: var(--white);
+		background: rgba(255, 255, 255, 0.9);
+		backdrop-filter: blur(8px);
 		border-bottom: 1px solid var(--border);
 		z-index: 1000;
 		display: flex;
@@ -55,15 +63,15 @@
 		align-items: center;
 		gap: 10px;
 		font-family: var(--font-main);
-		font-weight: 700;
-		font-size: 1.2rem;
-		letter-spacing: -0.05em;
+		font-weight: 800;
+		font-size: 1.08rem;
+		letter-spacing: -0.03em;
 		color: inherit;
 		min-width: 0;
 	}
 
 	.brand-logo {
-		border-radius: 8px;
+		border-radius: var(--radius-sm);
 		flex: 0 0 auto;
 	}
 
@@ -74,7 +82,22 @@
 		white-space: nowrap;
 	}
 
-	.nav-minimal svg {
+	.nav-ic {
+		display: grid;
+		place-items: center;
+		padding: 6px;
+		margin: -6px;
+		border-radius: var(--radius-sm);
 		color: var(--text);
+		transition:
+			background 0.15s ease,
+			color 0.15s ease;
+	}
+
+	.nav-ic:hover,
+	.nav-ic:focus-visible {
+		background: rgba(6, 78, 59, 0.08);
+		color: var(--primary);
+		outline: none;
 	}
 </style>

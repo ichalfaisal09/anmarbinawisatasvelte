@@ -1,11 +1,19 @@
 <script lang="ts">
 	import FeedPost from '$lib/components/FeedPost.svelte';
+	import FeedWelcomeStrip from '$lib/components/FeedWelcomeStrip.svelte';
 
 	let { data } = $props();
 
 	const brandTitle = $derived((data.company.companyName ?? '').trim() || 'Anmar Binawisata');
 	const logoForFeed = $derived(data.company.logoUrl?.trim() ? data.company.logoUrl : '');
 	const waClean = $derived(String(data.company.waNumber ?? '').replace(/[^\d]/g, ''));
+
+	const activePromoCount = $derived(
+		data.posts.filter((p) => {
+			const end = Date.parse(p.expiresAt);
+			return Number.isFinite(end) && end > Date.now();
+		}).length
+	);
 </script>
 
 <svelte:head>
@@ -35,6 +43,11 @@
 		</div>
 	</div>
 {:else}
+	<FeedWelcomeStrip
+		brandName={data.company.companyName}
+		postCount={data.posts.length}
+		activePromoCount={activePromoCount}
+	/>
 	{#each data.posts as post, i (post.id)}
 		<FeedPost
 			title={post.title}
@@ -46,6 +59,7 @@
 			expiresAt={post.expiresAt}
 			officeHours={data.company.officeHours}
 			priorityImage={i === 0}
+			staggerIndex={i}
 		/>
 	{/each}
 {/if}
@@ -61,9 +75,9 @@
 		text-align: center;
 		padding: 2rem 1.25rem;
 		border: 1px solid var(--border);
-		border-radius: 14px;
+		border-radius: var(--radius-md);
 		background: var(--white);
-		box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
+		box-shadow: var(--shadow-soft);
 	}
 	.feed-empty-icon {
 		width: 72px;
@@ -97,7 +111,7 @@
 		justify-content: center;
 		min-height: 46px;
 		padding: 0 1.25rem;
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		background: var(--primary);
 		color: var(--white);
 		font-weight: 800;

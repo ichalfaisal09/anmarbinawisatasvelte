@@ -3,6 +3,7 @@ import { mkdir, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { readCompanySettings, writeCompanySettings } from '$lib/server/company-store';
+import { changeAdminPassword } from '$lib/server/admin-auth';
 
 const UPLOADS_DIR = path.resolve(process.cwd(), 'static', 'uploads');
 const MAX_LOGO_BYTES = 2 * 1024 * 1024;
@@ -99,7 +100,6 @@ export const actions = {
 		if (mapsUrl && !(mapsUrl.startsWith('http://') || mapsUrl.startsWith('https://'))) {
 			return fail(400, { message: 'Maps URL harus diawali http:// atau https://.', scope: 'contact' as const });
 		}
-
 		await writeCompanySettings({
 			...current,
 			waNumber,
@@ -110,5 +110,26 @@ export const actions = {
 			mapsUrl
 		});
 		return { ok: true as const, message: 'Kontak berhasil disimpan.' };
+	},
+
+	savePassword: async ({ request }) => {
+		const form = await request.formData();
+		const currentPassword = form.get('currentPassword')?.toString() ?? '';
+		const newPassword = form.get('newPassword')?.toString() ?? '';
+		const confirmPassword = form.get('confirmPassword')?.toString() ?? '';
+
+		if (!currentPassword || !newPassword || !confirmPassword) {
+			return fail(400, { scope: 'security' as const, message: 'Semua kolom password wajib diisi.' });
+		}
+		if (newPassword !== confirmPassword) {
+			return fail(400, { scope: 'security' as const, message: 'Konfirmasi password baru tidak sama.' });
+		}
+
+		const res = changeAdminPassword(currentPassword, newPassword);
+		if (!res.ok) {
+			return fail(400, { scope: 'security' as const, message: res.message });
+		}
+
+		return { ok: true as const, scope: 'security' as const, message: res.message };
 	}
 };

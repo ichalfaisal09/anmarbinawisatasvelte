@@ -101,31 +101,43 @@
 <style>
 	.strip {
 		border: 1px solid var(--border);
-		border-radius: 12px;
-		background: var(--white);
-		padding: 0.75rem 0.9rem 0.85rem;
-		box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03), 0 6px 20px rgba(0, 0, 0, 0.05);
+		border-radius: var(--radius-md);
+		background: linear-gradient(132deg, #ffffff 0%, #f0fdf9 38%, #fffbeb 72%, #ffffff 100%);
+		background-size: 220% 220%;
+		animation: strip-shift 26s ease-in-out infinite;
+		padding: 0.85rem 0.95rem 0.95rem;
+		box-shadow: var(--shadow-soft);
+	}
+
+	@keyframes strip-shift {
+		0%,
+		100% {
+			background-position: 0% 40%;
+		}
+		50% {
+			background-position: 100% 60%;
+		}
 	}
 
 	.strip-head {
-		margin-bottom: 0.65rem;
+		margin-bottom: 0.72rem;
 		text-align: center;
 	}
 
 	.strip-title {
 		font-family: var(--font-display);
-		font-size: 0.98rem;
-		font-weight: 700;
-		letter-spacing: -0.02em;
+		font-size: 1rem;
+		font-weight: 680;
+		letter-spacing: var(--tracking-tight);
 		margin: 0 0 0.2rem;
 		color: var(--text);
 	}
 
 	.strip-lede {
 		margin: 0;
-		font-size: 0.78rem;
-		font-weight: 600;
-		line-height: 1.4;
+		font-size: 0.76rem;
+		font-weight: 620;
+		line-height: 1.38;
 		color: var(--text-light);
 	}
 
@@ -144,8 +156,8 @@
 	}
 
 	.cell {
-		padding: 0.65rem 0.75rem 0.7rem;
-		border-radius: 10px;
+		padding: 0.68rem 0.75rem 0.76rem;
+		border-radius: var(--radius-sm);
 		background: rgba(6, 78, 59, 0.05);
 		border: 1px solid rgba(6, 78, 59, 0.12);
 		min-width: 0;
@@ -155,7 +167,14 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: flex-start;
-		gap: 0.3rem;
+		gap: 0.24rem;
+		transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+	}
+
+	.cell:hover {
+		transform: translateY(-1px);
+		box-shadow: 0 6px 18px rgba(6, 78, 59, 0.1);
+		border-color: rgba(6, 78, 59, 0.22);
 	}
 
 	.cell-label {
@@ -179,16 +198,16 @@
 
 	.cell-date {
 		margin: 0;
-		font-size: 0.74rem;
-		font-weight: 600;
+		font-size: 0.73rem;
+		font-weight: 620;
 		color: var(--text-light);
-		line-height: 1.4;
+		line-height: 1.35;
 		max-width: 100%;
 	}
 
 	.cell-time {
 		margin: 0;
-		font-size: 1.22rem;
+		font-size: 1.18rem;
 		font-weight: 900;
 		font-variant-numeric: tabular-nums;
 		letter-spacing: -0.02em;
@@ -219,19 +238,39 @@
 			font-size: 0.76rem;
 		}
 		.cell-time {
-			font-size: 1.12rem;
+			font-size: 1.08rem;
 		}
 		.cell {
 			min-height: 6.85rem;
 		}
 	}
 
+	@media (prefers-reduced-motion: reduce) {
+		.strip {
+			animation: none;
+			background: var(--white);
+		}
+
+		.cell {
+			transition: none;
+		}
+
+		.cell:hover {
+			transform: none;
+			box-shadow: none;
+		}
+	}
+
 	@media (max-width: 420px) {
 		.strip-grid {
 			grid-template-columns: 1fr;
+			gap: 0.5rem 0;
 		}
 		.cell-divider {
 			display: none;
+		}
+		.cell {
+			min-height: 6.9rem;
 		}
 	}
 </style>

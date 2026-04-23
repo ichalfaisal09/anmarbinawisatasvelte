@@ -7,7 +7,10 @@
 	const pathname = $derived(page.url.pathname);
 	const isLoginRoute = $derived(pathname === '/admin/login');
 	const isPostsNavActive = $derived(pathname === '/admin' || pathname.startsWith('/admin/posts'));
+	const isGalleryNavActive = $derived(pathname === '/admin/gallery');
+	const isInformasiNavActive = $derived(pathname === '/admin/informasi');
 	const isSettingsNavActive = $derived(pathname === '/admin/settings');
+	const isAnalyticsNavActive = $derived(pathname === '/admin/analytics');
 
 	const displayCompanyName = $derived((data.company.companyName ?? '').trim() || 'Anmar Binawisata');
 	const displayLogo = $derived(data.company.logoUrl?.trim() ? data.company.logoUrl : '/logo.svg');
@@ -22,8 +25,15 @@
 	</main>
 {:else}
 	<div class="admin">
+		<button
+			type="button"
+			class="mobile-backdrop"
+			class:show={sidebarOpen}
+			aria-label="Tutup menu"
+			onclick={() => (sidebarOpen = false)}
+		></button>
 		<aside class:open={sidebarOpen} class="sidebar" aria-label="Admin navigation">
-			<a class="brand" href="/admin" aria-label="Admin dashboard">
+			<a class="brand" href="/admin" aria-label="Admin dashboard" onclick={() => (sidebarOpen = false)}>
 				<img class="logo" src={displayLogo} alt="" width="32" height="32" />
 				<div class="brand-text">
 					<div class="brand-name">{displayCompanyName}</div>
@@ -32,8 +42,17 @@
 			</a>
 
 			<nav class="nav">
-				<a class:active={isPostsNavActive} href="/admin">Posts</a>
-				<a class:active={isSettingsNavActive} href="/admin/settings">Settings</a>
+				<a class:active={isPostsNavActive} href="/admin" onclick={() => (sidebarOpen = false)}>Posts</a>
+				<a class:active={isGalleryNavActive} href="/admin/gallery" onclick={() => (sidebarOpen = false)}>Galeri</a>
+				<a class:active={isInformasiNavActive} href="/admin/informasi" onclick={() => (sidebarOpen = false)}
+					>Informasi</a
+				>
+				<a class:active={isSettingsNavActive} href="/admin/settings" onclick={() => (sidebarOpen = false)}
+					>Settings</a
+				>
+				<a class:active={isAnalyticsNavActive} href="/admin/analytics" onclick={() => (sidebarOpen = false)}
+					>Analytics</a
+				>
 			</nav>
 
 			<div class="spacer"></div>
@@ -63,8 +82,14 @@
 						Edit Post
 					{:else if pathname.startsWith('/admin/posts/new')}
 						Post Baru
+					{:else if pathname === '/admin/gallery'}
+						Galeri
+					{:else if pathname === '/admin/informasi'}
+						Informasi
 					{:else if pathname === '/admin/settings'}
 						Settings
+					{:else if pathname === '/admin/analytics'}
+						Analytics
 					{:else}
 						Admin
 					{/if}
@@ -81,6 +106,12 @@
 		</div>
 	</div>
 {/if}
+
+<svelte:window
+	onkeydown={(e) => {
+		if (sidebarOpen && e.key === 'Escape') sidebarOpen = false;
+	}}
+/>
 
 <style>
 	.login-only {
@@ -229,6 +260,23 @@
 
 	/* Mobile sidebar drawer */
 	@media (max-width: 900px) {
+		.mobile-backdrop {
+			position: fixed;
+			inset: 0;
+			border: 0;
+			padding: 0;
+			margin: 0;
+			opacity: 0;
+			pointer-events: none;
+			background: rgba(2, 6, 23, 0.35);
+			backdrop-filter: blur(1px);
+			transition: opacity 0.2s ease;
+			z-index: 19;
+		}
+		.mobile-backdrop.show {
+			opacity: 1;
+			pointer-events: auto;
+		}
 		.admin {
 			grid-template-columns: 1fr;
 		}

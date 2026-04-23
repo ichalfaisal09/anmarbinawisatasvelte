@@ -1,0 +1,23 @@
+{
+  "permits": [
+    {
+      "id": "ppiu",
+      "title": "Izin PPIU",
+      "subtitle": "Penyelenggara Perjalanan Ibadah Umrah",
+      "licenseNumber": "NOMOR U.522 TAHUN 2020",
+      "validUntil": "-"
+    },
+    {
+      "id": "pihk",
+      "title": "Izin PIHK",
+      "subtitle": "Penyelenggara Ibadah Haji Khusus",
+      "licenseNumber": "NOMOR 499 TAHUN 2021",
+      "validUntil": "-"
+    }
+  ],
+  "companyDocs": [
+    { "name": "SIUP" },
+    { "name": "TDP" },
+    { "name": "NPWP" }
+  ]
+}

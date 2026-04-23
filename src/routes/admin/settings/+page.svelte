@@ -6,6 +6,7 @@
 
 	let submittingBrand = $state(false);
 	let submittingContact = $state(false);
+	let submittingSecurity = $state(false);
 	let toast = $state<string | null>(null);
 	let toastTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -226,6 +227,51 @@
 
 			<button type="submit" class="btn-submit" disabled={submittingContact}>
 				{submittingContact ? 'Menyimpan…' : 'Simpan kontak'}
+			</button>
+		</form>
+
+		<form
+			method="POST"
+			action="?/savePassword"
+			class="card"
+			use:enhance={() => {
+				submittingSecurity = true;
+				return async ({ result, update }) => {
+					await update({ reset: false });
+					submittingSecurity = false;
+					if (result.type === 'success') {
+						const d = result.data as { ok?: boolean; message?: string } | undefined;
+						if (d?.ok && d.message) showToast(d.message);
+					}
+				};
+			}}
+		>
+			<div class="card-head">
+				<h2 class="card-title">Keamanan admin</h2>
+				<p class="card-sub">Ganti password login panel admin.</p>
+			</div>
+
+			{#if form?.scope === 'security' && form.message}
+				<div class="banner err" role="alert">{form.message}</div>
+			{/if}
+
+			<div class="grid">
+				<label>
+					<span>Password lama</span>
+					<input name="currentPassword" type="password" autocomplete="current-password" required />
+				</label>
+				<label>
+					<span>Password baru (minimal 10 karakter)</span>
+					<input name="newPassword" type="password" autocomplete="new-password" minlength="10" required />
+				</label>
+				<label>
+					<span>Konfirmasi password baru</span>
+					<input name="confirmPassword" type="password" autocomplete="new-password" minlength="10" required />
+				</label>
+			</div>
+
+			<button type="submit" class="btn-submit" disabled={submittingSecurity}>
+				{submittingSecurity ? 'Menyimpan…' : 'Simpan password'}
 			</button>
 		</form>
 	</div>

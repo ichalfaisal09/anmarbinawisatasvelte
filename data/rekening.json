@@ -1,0 +1,20 @@
+[
+  {
+    "id": "bsi",
+    "bank": "Bank BSI",
+    "branch": "Cabang Makassar",
+    "accountNumber": "7250168xxx",
+    "accountName": "PT ANMAR BINAWISATA",
+    "logoUrl": "/bank-logos/bsi.png",
+    "logoAlt": "Logo Bank BSI"
+  },
+  {
+    "id": "mandiri",
+    "bank": "Bank Mandiri",
+    "branch": "Cabang Makassar",
+    "accountNumber": "152 0007476 xx",
+    "accountName": "PT ANMAR BINAWISATA",
+    "logoUrl": "/bank-logos/mandiri.png",
+    "logoAlt": "Logo Bank Mandiri"
+  }
+]
