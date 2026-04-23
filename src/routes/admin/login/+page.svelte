@@ -241,7 +241,7 @@
 	.form-alert {
 		margin: 0;
 		padding: 10px 12px;
-		border-radius: 12px;
+		border-radius: var(--radius-sm);
 		font-weight: 800;
 		font-size: 0.92rem;
 		color: #7f1d1d;

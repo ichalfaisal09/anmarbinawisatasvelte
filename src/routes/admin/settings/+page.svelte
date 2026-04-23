@@ -303,12 +303,12 @@
 	.card {
 		background: var(--white);
 		border: 1px solid var(--border);
-		border-radius: 12px;
+		border-radius: var(--radius-md);
 		padding: 18px;
 		display: flex;
 		flex-direction: column;
 		gap: 12px;
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+		box-shadow: var(--shadow-soft);
 	}
 	.card-head {
 		margin-bottom: 2px;
@@ -333,7 +333,7 @@
 		z-index: 60;
 		max-width: min(420px, calc(100vw - 36px));
 		padding: 12px 14px;
-		border-radius: 12px;
+		border-radius: var(--radius-md);
 		font-weight: 800;
 		box-shadow: 0 14px 40px rgba(0, 0, 0, 0.18);
 		border: 1px solid rgba(6, 78, 59, 0.28);
@@ -342,7 +342,7 @@
 	}
 	.banner.err {
 		padding: 10px 12px;
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		font-weight: 800;
 		font-size: 0.95rem;
 		color: #7f1d1d;
@@ -381,7 +381,7 @@
 	input,
 	textarea {
 		border: 1px solid var(--border);
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		font: inherit;
 		background: var(--white);
 		padding: 12px 14px;
@@ -409,7 +409,7 @@
 		flex: 0 0 auto;
 		width: 88px;
 		height: 88px;
-		border-radius: 14px;
+		border-radius: var(--radius-md);
 		overflow: hidden;
 		border: 1px solid var(--border);
 		background: #f4f4f5;
@@ -440,7 +440,7 @@
 		gap: 4px;
 		padding: 12px 14px;
 		border: 1px dashed rgba(6, 78, 59, 0.35);
-		border-radius: 12px;
+		border-radius: var(--radius-md);
 		background: rgba(6, 78, 59, 0.04);
 		min-height: 88px;
 		justify-content: center;
@@ -465,7 +465,7 @@
 		margin-top: 4px;
 		height: 46px;
 		border: 0;
-		border-radius: 12px;
+		border-radius: var(--radius-sm);
 		font-weight: 800;
 		cursor: pointer;
 		background: var(--primary);

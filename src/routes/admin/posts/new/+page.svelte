@@ -128,11 +128,14 @@
 	.meta {
 		margin: 6px 0 0;
 		color: var(--text-light);
+		font-weight: 600;
+		line-height: 1.45;
+		max-width: 52ch;
 	}
 	.btn-ghost {
 		height: 40px;
 		padding: 0 14px;
-		border-radius: 12px;
+		border-radius: var(--radius-sm);
 		border: 1px solid var(--border);
 		background: var(--white);
 		font-weight: 900;
@@ -143,16 +146,16 @@
 	.card {
 		background: var(--white);
 		border: 1px solid var(--border);
-		border-radius: 12px;
+		border-radius: var(--radius-md);
 		padding: 18px;
 		display: flex;
 		flex-direction: column;
 		gap: 12px;
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+		box-shadow: var(--shadow-soft);
 	}
 	.banner.err {
 		padding: 10px 12px;
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		font-weight: 800;
 		font-size: 0.95rem;
 		color: #7f1d1d;
@@ -179,7 +182,7 @@
 		height: 46px;
 		padding: 0 14px;
 		border: 1px solid var(--border);
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		font: inherit;
 		background: var(--white);
 		width: 100%;
@@ -187,7 +190,7 @@
 	button {
 		height: 46px;
 		border: 0;
-		border-radius: 12px;
+		border-radius: var(--radius-sm);
 		font-weight: 900;
 		cursor: pointer;
 		background: var(--primary);
@@ -211,7 +214,7 @@
 	}
 	.drop {
 		border: 1px dashed rgba(6, 78, 59, 0.35);
-		border-radius: 14px;
+		border-radius: var(--radius-md);
 		background: rgba(6, 78, 59, 0.04);
 		padding: 14px;
 		min-height: 170px;
@@ -243,7 +246,7 @@
 		width: min(100%, 520px);
 		height: 240px;
 		object-fit: cover;
-		border-radius: 12px;
+		border-radius: var(--radius-sm);
 		border: 1px solid var(--border);
 		background: #f3f4f6;
 	}

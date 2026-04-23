@@ -98,10 +98,12 @@
 		margin: 6px 0 0;
 		color: var(--text-light);
 		font-weight: 600;
+		line-height: 1.45;
+		max-width: 56ch;
 	}
 	.banner {
 		padding: 10px 12px;
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		font-weight: 800;
 		font-size: 0.93rem;
 	}
@@ -118,9 +120,9 @@
 	.card {
 		background: var(--white);
 		border: 1px solid var(--border);
-		border-radius: 12px;
-		padding: 16px;
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+		border-radius: var(--radius-md);
+		padding: 18px;
+		box-shadow: var(--shadow-soft);
 	}
 	h2 {
 		margin: 0 0 12px;
@@ -129,6 +131,8 @@
 	h3 {
 		margin: 2px 0 2px;
 		font-size: 0.95rem;
+		color: var(--text-light);
+		font-weight: 700;
 	}
 	.stack {
 		display: flex;
@@ -146,24 +150,27 @@
 		gap: 6px;
 	}
 	label span {
-		font-size: 0.88rem;
-		font-weight: 700;
+		font-size: 0.92rem;
+		font-weight: 600;
 	}
 	input,
 	textarea {
 		border: 1px solid var(--border);
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		background: var(--white);
-		padding: 10px 12px;
+		padding: 0 12px;
+		height: 46px;
 		font: inherit;
 	}
 	textarea {
 		resize: vertical;
+		min-height: 110px;
+		padding: 12px;
 	}
 	.btn-primary {
-		height: 40px;
+		height: 46px;
 		padding: 0 12px;
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		border: none;
 		font-weight: 800;
 		cursor: pointer;

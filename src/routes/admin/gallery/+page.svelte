@@ -49,7 +49,19 @@
 	<section class="card">
 		<h2>Daftar foto ({data.gallery.length})</h2>
 		{#if data.gallery.length === 0}
-			<p class="empty">Belum ada data galeri.</p>
+			<div class="empty">
+				<div class="empty-icon" aria-hidden="true">
+					<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8">
+						<path d="M4 16l4.5-4.5a2 2 0 0 1 2.8 0l2.2 2.2 2.4-2.4a2 2 0 0 1 2.8 0L20 12.6" />
+						<rect x="3" y="5" width="18" height="14" rx="2" />
+						<circle cx="8.5" cy="9.5" r="1.2" fill="currentColor" stroke="none" />
+					</svg>
+				</div>
+				<div>
+					<p class="empty-title">Belum ada data galeri.</p>
+					<p class="empty-lede">Tambahkan foto pertama untuk mulai menampilkan dokumentasi di halaman publik.</p>
+				</div>
+			</div>
 		{:else}
 			<div class="list">
 				{#each data.gallery as item (item.id)}
@@ -108,10 +120,12 @@
 		margin: 6px 0 0;
 		color: var(--text-light);
 		font-weight: 600;
+		line-height: 1.45;
+		max-width: 56ch;
 	}
 	.banner {
 		padding: 10px 12px;
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		font-weight: 800;
 		font-size: 0.93rem;
 	}
@@ -128,9 +142,9 @@
 	.card {
 		background: var(--white);
 		border: 1px solid var(--border);
-		border-radius: 12px;
-		padding: 16px;
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+		border-radius: var(--radius-md);
+		padding: 18px;
+		box-shadow: var(--shadow-soft);
 	}
 	.card h2 {
 		margin: 0 0 12px;
@@ -152,14 +166,15 @@
 		gap: 6px;
 	}
 	label span {
-		font-size: 0.88rem;
-		font-weight: 700;
+		font-size: 0.92rem;
+		font-weight: 600;
 	}
 	input {
 		border: 1px solid var(--border);
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		background: var(--white);
-		padding: 10px 12px;
+		padding: 0 12px;
+		height: 46px;
 		font: inherit;
 	}
 	.hint {
@@ -171,9 +186,9 @@
 	.btn-primary,
 	.btn-secondary,
 	.btn-danger {
-		height: 40px;
+		height: 46px;
 		padding: 0 12px;
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		border: none;
 		font-weight: 800;
 		cursor: pointer;
@@ -194,6 +209,35 @@
 		margin: 0;
 		color: var(--text-light);
 		font-weight: 700;
+		display: flex;
+		align-items: flex-start;
+		gap: 10px;
+		border: 1px dashed var(--border);
+		border-radius: var(--radius-md);
+		padding: 12px;
+		background: #fafafa;
+	}
+	.empty-icon {
+		width: 32px;
+		height: 32px;
+		border-radius: var(--radius-sm);
+		display: grid;
+		place-items: center;
+		color: var(--primary);
+		background: rgba(6, 78, 59, 0.1);
+		flex-shrink: 0;
+	}
+	.empty-title {
+		margin: 0;
+		color: var(--text);
+		font-size: 0.9rem;
+		font-weight: 800;
+	}
+	.empty-lede {
+		margin: 4px 0 0;
+		font-size: 0.8rem;
+		line-height: 1.4;
+		font-weight: 600;
 	}
 	.list {
 		display: flex;
@@ -202,7 +246,7 @@
 	}
 	.item {
 		border: 1px solid var(--border);
-		border-radius: 12px;
+		border-radius: var(--radius-md);
 		padding: 12px;
 		display: grid;
 		grid-template-columns: 110px 1fr auto;
@@ -213,7 +257,7 @@
 		width: 110px;
 		aspect-ratio: 1;
 		border: 1px solid var(--border);
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		overflow: hidden;
 		background: #f3f4f6;
 	}

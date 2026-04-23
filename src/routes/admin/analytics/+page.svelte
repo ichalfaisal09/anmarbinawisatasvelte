@@ -180,6 +180,8 @@
 		margin: 6px 0 0;
 		color: var(--text-light);
 		font-weight: 600;
+		line-height: 1.45;
+		max-width: 56ch;
 	}
 	.toast {
 		position: fixed;
@@ -198,12 +200,12 @@
 	.card {
 		background: var(--white);
 		border: 1px solid var(--border);
-		border-radius: 12px;
+		border-radius: var(--radius-md);
 		padding: 18px;
 		display: flex;
 		flex-direction: column;
 		gap: 12px;
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+		box-shadow: var(--shadow-soft);
 		max-width: 720px;
 	}
 	.logs-card {
@@ -220,7 +222,7 @@
 	}
 	.banner.err {
 		padding: 10px 12px;
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		font-weight: 800;
 		font-size: 0.95rem;
 		color: #7f1d1d;
@@ -230,7 +232,7 @@
 	.toggle {
 		padding: 10px 12px;
 		border: 1px solid var(--border);
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		background: #fafafa;
 		display: flex;
 		flex-direction: column;
@@ -288,9 +290,9 @@
 		color: var(--text-light);
 	}
 	.days-filter select {
-		height: 38px;
+		height: 40px;
 		border: 1px solid var(--border);
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		padding: 0 10px;
 		font: inherit;
 		background: var(--white);
@@ -301,12 +303,16 @@
 		gap: 8px;
 	}
 	.chip {
-		padding: 6px 10px;
+		min-height: 24px;
+		padding: 0 11px;
+		display: inline-flex;
+		align-items: center;
 		border-radius: 999px;
 		border: 1px solid var(--border);
 		background: #fafafa;
-		font-size: 0.8rem;
-		font-weight: 700;
+		font-size: 0.74rem;
+		font-weight: 800;
+		letter-spacing: 0.01em;
 	}
 	.empty {
 		margin: 0;
@@ -316,14 +322,14 @@
 		align-items: flex-start;
 		gap: 10px;
 		border: 1px dashed var(--border);
-		border-radius: 12px;
+		border-radius: var(--radius-md);
 		padding: 12px;
 		background: #fafafa;
 	}
 	.empty-icon {
 		width: 32px;
 		height: 32px;
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		display: grid;
 		place-items: center;
 		color: var(--primary);
@@ -353,7 +359,7 @@
 	}
 	th,
 	td {
-		padding: 9px 10px;
+		padding: 10px 12px;
 		border-bottom: 1px solid var(--border);
 		text-align: left;
 		vertical-align: top;
@@ -364,6 +370,9 @@
 		font-weight: 800;
 		background: rgba(0, 0, 0, 0.02);
 	}
+	tbody tr:last-child td {
+		border-bottom: 0;
+	}
 	.payload code {
 		white-space: pre-wrap;
 		word-break: break-word;
@@ -371,7 +380,7 @@
 	}
 	input {
 		border: 1px solid var(--border);
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		font: inherit;
 		background: var(--white);
 		padding: 12px 14px;
@@ -381,7 +390,7 @@
 		margin-top: 4px;
 		height: 46px;
 		border: 0;
-		border-radius: 12px;
+		border-radius: var(--radius-sm);
 		font-weight: 800;
 		cursor: pointer;
 		background: var(--primary);

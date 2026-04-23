@@ -379,6 +379,8 @@
 		color: var(--text-light);
 		margin: 6px 0 0;
 		font-weight: 700;
+		line-height: 1.45;
+		max-width: 52ch;
 	}
 	.head-right {
 		display: flex;
@@ -406,9 +408,9 @@
 		font-weight: 900;
 	}
 	.btn-primary {
-		height: 40px;
+		height: 46px;
 		padding: 0 14px;
-		border-radius: 12px;
+		border-radius: var(--radius-sm);
 		border: 0;
 		background: var(--primary);
 		color: white;
@@ -421,9 +423,9 @@
 	.card {
 		background: var(--white);
 		border: 1px solid var(--border);
-		border-radius: 12px;
+		border-radius: var(--radius-md);
 		padding: 0;
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+		box-shadow: var(--shadow-soft);
 		overflow: hidden;
 	}
 
@@ -473,15 +475,15 @@
 		text-align: left;
 		font-size: 0.85rem;
 		color: var(--text-light);
-		font-weight: 900;
-		padding: 12px 14px;
+		font-weight: 800;
+		padding: 10px 12px;
 		border-bottom: 1px solid var(--border);
 		background: rgba(0, 0, 0, 0.02);
 		white-space: nowrap;
 	}
 	tbody td {
 		vertical-align: middle;
-		padding: 12px 14px;
+		padding: 10px 12px;
 		border-bottom: 1px solid var(--border);
 	}
 	tbody tr:last-child td {
@@ -504,7 +506,7 @@
 	.thumb-wrap {
 		width: 96px;
 		height: 96px;
-		border-radius: 14px;
+		border-radius: var(--radius-sm);
 		overflow: hidden;
 		border: 1px solid var(--border);
 		background: #f3f4f6;
@@ -525,11 +527,11 @@
 	.badge {
 		display: inline-flex;
 		align-items: center;
-		height: 22px;
-		padding: 0 10px;
+		height: 24px;
+		padding: 0 11px;
 		border-radius: 999px;
-		font-size: 0.72rem;
-		font-weight: 900;
+		font-size: 0.74rem;
+		font-weight: 800;
 		letter-spacing: 0.02em;
 		text-transform: uppercase;
 		border: 1px solid rgba(6, 78, 59, 0.22);
@@ -566,9 +568,9 @@
 		text-underline-offset: 3px;
 	}
 	.btn-del {
-		height: 36px;
+		height: 40px;
 		padding: 0 12px;
-		border-radius: 10px;
+		border-radius: var(--radius-sm);
 		font-weight: 900;
 		border: 0;
 		cursor: pointer;
@@ -577,10 +579,13 @@
 	}
 
 	.empty {
-		padding: 16px 14px;
+		padding: 12px;
 		color: var(--text-light);
-		font-weight: 800;
+		font-weight: 700;
 		margin: 0;
+		border: 1px dashed var(--border);
+		border-radius: var(--radius-md);
+		background: #fafafa;
 	}
 
 	.empty-hero {
@@ -667,7 +672,7 @@
 	.btn-modal-ghost {
 		height: 40px;
 		padding: 0 14px;
-		border-radius: 12px;
+		border-radius: var(--radius-sm);
 		border: 1px solid var(--border);
 		background: var(--white);
 		font-weight: 900;
@@ -680,7 +685,7 @@
 	.btn-modal-danger {
 		height: 40px;
 		padding: 0 14px;
-		border-radius: 12px;
+		border-radius: var(--radius-sm);
 		border: 0;
 		background: #b42318;
 		color: white;
