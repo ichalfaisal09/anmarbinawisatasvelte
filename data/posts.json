@@ -1,0 +1,16 @@
+[
+  {
+    "id": 2,
+    "title": "Tes 2",
+    "imageUrl": "/uploads/1776906457811-858bb3a5-9c08-44ec-a42c-125199f3cf7c.webp",
+    "createdAt": "2026-04-23T01:07:37.810Z",
+    "expiresAt": "2026-04-29T01:07:00.000Z"
+  },
+  {
+    "id": 1,
+    "title": "Tes 1",
+    "imageUrl": "/uploads/1776906440053-89dd7091-e60e-4c5a-a1bc-7542dd354dbe.png",
+    "createdAt": "2026-04-23T01:07:20.052Z",
+    "expiresAt": "2026-04-30T01:07:00.000Z"
+  }
+]
