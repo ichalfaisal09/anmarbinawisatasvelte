@@ -1,0 +1,1 @@
+var e={HOME:`/`,INFORMASI:`/informasi`,INFORMASI_KONTAK:`/informasi/kontak`};function t(t){return t===`/`||t===``?e.HOME:t.endsWith(`/`)?t.slice(0,-1):t}function n(t){return t===e.INFORMASI||t.startsWith(`${e.INFORMASI}/`)}export{n,t as r,e as t};
