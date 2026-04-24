@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
+	import { toMediaUrl } from '$lib/media-url';
 	import { trackUiEvent } from '$lib/utils/track';
 
 	let { data } = $props();
@@ -119,7 +120,7 @@
 							{:else}
 								<img
 									class="thumb"
-									src={item.imageUrl}
+									src={toMediaUrl(item.imageUrl)}
 									alt={item.alt}
 									loading="lazy"
 									decoding="async"
@@ -155,7 +156,7 @@
 				{:else}
 					<img
 						class="lightbox-img"
-						src={activeItem.imageUrl}
+						src={toMediaUrl(activeItem.imageUrl)}
 						alt={activeItem.alt}
 						loading="eager"
 						decoding="async"

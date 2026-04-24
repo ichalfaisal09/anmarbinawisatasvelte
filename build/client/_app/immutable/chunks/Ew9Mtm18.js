@@ -1,0 +1,1 @@
+function e(e){let t=String(e??``).trim();return t?/^(https?:)?\/\//i.test(t)||/^(data:|blob:)/i.test(t)||t.startsWith(`/`)?t:`/${t.replace(/^\/+/,``)}`:``}export{e as t};

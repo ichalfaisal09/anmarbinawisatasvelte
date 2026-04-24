@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { toMediaUrl } from '$lib/media-url';
+
 	let { data, form } = $props();
 </script>
 
@@ -67,7 +69,7 @@
 				{#each data.gallery as item (item.id)}
 					<article class="item">
 						<div class="preview">
-							<img src={item.imageUrl} alt={item.alt} loading="lazy" />
+							<img src={toMediaUrl(item.imageUrl)} alt={item.alt} loading="lazy" />
 						</div>
 						<form method="POST" action="?/update" enctype="multipart/form-data" class="item-form">
 							<input type="hidden" name="id" value={item.id} />

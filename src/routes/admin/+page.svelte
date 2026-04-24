@@ -2,6 +2,7 @@
 	import { tick } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { enhance } from '$app/forms';
+	import { toMediaUrl } from '$lib/media-url';
 
 	let { data } = $props();
 
@@ -220,7 +221,7 @@
 								<tr>
 									<td class="td-thumb">
 										<div class="thumb-wrap">
-											<img class="thumb" src={post.imageUrl} alt={post.title} loading="lazy" />
+											<img class="thumb" src={toMediaUrl(post.imageUrl)} alt={post.title} loading="lazy" />
 										</div>
 									</td>
 									<td class="td-title">

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { toMediaUrl } from '$lib/media-url';
+
 	let {
 		title,
 		imageUrl,
@@ -54,13 +56,15 @@
 	});
 
 	const imgAlt = $derived(`Promo: ${title}`);
+	const postImageUrl = $derived(toMediaUrl(imageUrl));
+	const brandLogoUrl = $derived(toMediaUrl(logo));
 </script>
 
 <article class="post" style="--stagger:{staggerIndex}">
 	<header class="post-header">
 		<div class="avatar-wrap" aria-hidden="true">
 			{#if logo}
-				<img class="avatar-img" src={logo} alt="" width="36" height="36" />
+				<img class="avatar-img" src={brandLogoUrl} alt="" width="36" height="36" />
 			{:else}
 				<span class="avatar-letter">{initial}</span>
 			{/if}
@@ -83,7 +87,7 @@
 			<div class="media-skeleton" aria-hidden="true"></div>
 		{/if}
 		<img
-			src={imageUrl}
+			src={postImageUrl}
 			alt={imgAlt}
 			class="media-img"
 			class:media-img--loaded={imageLoaded}
