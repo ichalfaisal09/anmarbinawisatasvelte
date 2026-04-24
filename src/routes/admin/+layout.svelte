@@ -126,6 +126,11 @@
 		background: var(--bg);
 	}
 
+	/* Hidden by default so it does not consume a desktop grid cell. */
+	.mobile-backdrop {
+		display: none;
+	}
+
 	.sidebar {
 		position: sticky;
 		top: 0;
@@ -261,6 +266,7 @@
 	/* Mobile sidebar drawer */
 	@media (max-width: 900px) {
 		.mobile-backdrop {
+			display: block;
 			position: fixed;
 			inset: 0;
 			border: 0;
