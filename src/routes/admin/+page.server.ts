@@ -1,10 +1,7 @@
 import { fail } from '@sveltejs/kit';
 import { readPosts, writePosts } from '$lib/server/posts-store';
 import { getAdminCookieName } from '$lib/server/admin-auth';
-import { unlink } from 'node:fs/promises';
-import path from 'node:path';
-
-const UPLOADS_DIR = path.resolve(process.cwd(), 'static', 'uploads');
+import { deleteUploadedFile } from '$lib/server/upload-storage';
 
 function isUploadPath(imageUrl: string) {
 	return imageUrl.startsWith('/uploads/');
@@ -14,12 +11,7 @@ async function deleteUploadFileIfExists(imageUrl: string) {
 	if (!isUploadPath(imageUrl)) return;
 	const filename = imageUrl.slice('/uploads/'.length);
 	if (!filename) return;
-	const absPath = path.join(UPLOADS_DIR, filename);
-	try {
-		await unlink(absPath);
-	} catch {
-		// ignore missing file
-	}
+	await deleteUploadedFile(filename);
 }
 
 export const load = async ({ url }) => {

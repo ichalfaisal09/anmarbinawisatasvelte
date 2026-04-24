@@ -1,10 +1,10 @@
 import { fail } from '@sveltejs/kit';
 import { randomUUID } from 'node:crypto';
-import { mkdir, unlink, writeFile } from 'node:fs/promises';
+import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { readGallery, writeGallery } from '$lib/server/gallery-store';
+import { deleteUploadedFile, getWritableUploadsDir, toUploadPublicUrl } from '$lib/server/upload-storage';
 
-const GALLERY_UPLOADS_DIR = path.resolve(process.cwd(), 'static', 'uploads', 'gallery');
 const MAX_IMAGE_BYTES = 6 * 1024 * 1024;
 
 function safeExtFromType(type: string) {
@@ -24,21 +24,16 @@ async function deleteGalleryImageIfExists(imageUrl: string) {
 	if (!isGalleryUploadPath(imageUrl)) return;
 	const filename = imageUrl.slice('/uploads/gallery/'.length);
 	if (!filename) return;
-	const absPath = path.join(GALLERY_UPLOADS_DIR, filename);
-	try {
-		await unlink(absPath);
-	} catch {
-		// ignore if missing
-	}
+	await deleteUploadedFile(`gallery/${filename}`);
 }
 
 async function writeGalleryUpload(file: File, ext: string) {
-	await mkdir(GALLERY_UPLOADS_DIR, { recursive: true });
+	const uploadsDir = await getWritableUploadsDir('gallery');
 	const filename = `${Date.now()}-${randomUUID().slice(0, 8)}.${ext}`;
-	const absPath = path.join(GALLERY_UPLOADS_DIR, filename);
+	const absPath = path.join(uploadsDir, filename);
 	const buffer = Buffer.from(await file.arrayBuffer());
 	await writeFile(absPath, buffer);
-	return `/uploads/gallery/${filename}`;
+	return toUploadPublicUrl(filename, 'gallery');
 }
 
 export const load = async () => {

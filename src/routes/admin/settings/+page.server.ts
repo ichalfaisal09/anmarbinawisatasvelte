@@ -1,11 +1,11 @@
 import { fail } from '@sveltejs/kit';
-import { mkdir, unlink, writeFile } from 'node:fs/promises';
+import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { readCompanySettings, writeCompanySettings } from '$lib/server/company-store';
 import { changeAdminPassword } from '$lib/server/admin-auth';
+import { deleteUploadedFile, getWritableUploadsDir, toUploadPublicUrl } from '$lib/server/upload-storage';
 
-const UPLOADS_DIR = path.resolve(process.cwd(), 'static', 'uploads');
 const MAX_LOGO_BYTES = 2 * 1024 * 1024;
 
 function safeExtFromType(type: string) {
@@ -21,12 +21,7 @@ async function deleteUploadIfExists(imageUrl: string | undefined) {
 	if (!imageUrl?.startsWith('/uploads/')) return;
 	const filename = imageUrl.slice('/uploads/'.length);
 	if (!filename) return;
-	const absPath = path.join(UPLOADS_DIR, filename);
-	try {
-		await unlink(absPath);
-	} catch {
-		// ignore
-	}
+	await deleteUploadedFile(filename);
 }
 
 async function writeCompanyLogoFile(file: File): Promise<string> {
@@ -34,12 +29,12 @@ async function writeCompanyLogoFile(file: File): Promise<string> {
 	if (!ext) throw new Error('Format logo harus JPG, PNG, WEBP, atau GIF.');
 	if (file.size > MAX_LOGO_BYTES) throw new Error('Ukuran logo maksimal 2MB.');
 
-	await mkdir(UPLOADS_DIR, { recursive: true });
+	const uploadsDir = await getWritableUploadsDir();
 	const filename = `company-logo-${Date.now()}-${randomUUID().slice(0, 8)}.${ext}`;
-	const absPath = path.join(UPLOADS_DIR, filename);
+	const absPath = path.join(uploadsDir, filename);
 	const buffer = Buffer.from(await file.arrayBuffer());
 	await writeFile(absPath, buffer);
-	return `/uploads/${filename}`;
+	return toUploadPublicUrl(filename);
 }
 
 export const load = async () => {

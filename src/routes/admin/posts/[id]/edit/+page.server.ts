@@ -1,10 +1,10 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import { readPosts, writePosts } from '$lib/server/posts-store';
+import { deleteUploadedFile, getWritableUploadsDir, toUploadPublicUrl } from '$lib/server/upload-storage';
 import { randomUUID } from 'node:crypto';
-import { mkdir, unlink, writeFile } from 'node:fs/promises';
+import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const UPLOADS_DIR = path.resolve(process.cwd(), 'static', 'uploads');
 const MAX_IMAGE_BYTES = 6 * 1024 * 1024;
 
 function safeExtFromType(type: string) {
@@ -24,21 +24,16 @@ async function deleteUploadFileIfExists(imageUrl: string) {
 	if (!isUploadPath(imageUrl)) return;
 	const filename = imageUrl.slice('/uploads/'.length);
 	if (!filename) return;
-	const absPath = path.join(UPLOADS_DIR, filename);
-	try {
-		await unlink(absPath);
-	} catch {
-		// ignore missing file
-	}
+	await deleteUploadedFile(filename);
 }
 
 async function writeUploadedImage(file: File, ext: string) {
-	await mkdir(UPLOADS_DIR, { recursive: true });
+	const uploadsDir = await getWritableUploadsDir();
 	const filename = `${Date.now()}-${randomUUID()}.${ext}`;
-	const absPath = path.join(UPLOADS_DIR, filename);
+	const absPath = path.join(uploadsDir, filename);
 	const buffer = Buffer.from(await file.arrayBuffer());
 	await writeFile(absPath, buffer);
-	return `/uploads/${filename}`;
+	return toUploadPublicUrl(filename);
 }
 
 function parseExpiresAt(value: string | undefined) {
