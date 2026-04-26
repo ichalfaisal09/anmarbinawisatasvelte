@@ -36,25 +36,20 @@
 	<meta name="twitter:description" content={siteDescription} />
 	<meta name="twitter:image" content={ogImage} />
 	{#if !isAdminRoute}
-		<script>
-			{`window.__trackingEnabled = ${trackingEnabled ? 'true' : 'false'};`}
-		</script>
+		{@html `<script>window.__trackingEnabled = ${trackingEnabled ? 'true' : 'false'};</script>`}
 	{/if}
 	{#if !isAdminRoute && trackingEnabled && ga4MeasurementId}
 		<script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4MeasurementId}`}></script>
-		<script>
-			{`
+		{@html `<script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){window.dataLayer.push(arguments);}
 window.gtag = window.gtag || gtag;
 window.gtag('js', new Date());
 window.gtag('config', '${ga4MeasurementId}');
-			`}
-		</script>
+		</script>`}
 	{/if}
 	{#if !isAdminRoute && trackingEnabled && metaPixelId}
-		<script>
-			{`
+		{@html `<script>
 !function(f,b,e,v,n,t,s){
 if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -66,8 +61,7 @@ s.parentNode.insertBefore(t,s)}(window, document,'script',
 window.fbq = window.fbq || fbq;
 window.fbq('init', '${metaPixelId}');
 window.fbq('track', 'PageView');
-			`}
-		</script>
+		</script>`}
 		<noscript>
 			<img
 				height="1"
