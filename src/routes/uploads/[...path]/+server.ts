@@ -4,6 +4,7 @@ import path from 'node:path';
 
 const STATIC_UPLOADS_ROOT = path.resolve(process.cwd(), 'static', 'uploads');
 const BUILT_UPLOADS_ROOT = path.resolve(process.cwd(), 'build', 'client', 'uploads');
+const DATA_UPLOADS_ROOT = path.resolve(process.cwd(), 'data', 'uploads');
 
 const CONTENT_TYPES: Record<string, string> = {
 	'.jpg': 'image/jpeg',
@@ -25,7 +26,8 @@ function safeRelativePath(value: string) {
 async function findFile(relativePath: string) {
 	const candidates = [
 		path.join(BUILT_UPLOADS_ROOT, relativePath),
-		path.join(STATIC_UPLOADS_ROOT, relativePath)
+		path.join(STATIC_UPLOADS_ROOT, relativePath),
+		path.join(DATA_UPLOADS_ROOT, relativePath)
 	];
 
 	for (const absPath of candidates) {
