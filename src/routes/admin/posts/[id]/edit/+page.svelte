@@ -2,6 +2,10 @@
 	import { onDestroy } from 'svelte';
 	import { enhance } from '$app/forms';
 
+	const MAX_IMAGE_BYTES = 6 * 1024 * 1024;
+	const MAX_IMAGE_MB = 6;
+	const MAX_IMAGE_DIMENSION = 4096;
+
 	let { data, form } = $props();
 
 	let submitting = $state(false);
@@ -11,6 +15,7 @@
 
 	let previewUrl = $state<string | null>(null);
 	let fileName = $state('');
+	let clientError = $state('');
 
 	function revokeUrl(url: string | null) {
 		if (!url) return;
@@ -28,13 +33,32 @@
 		return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 	}
 
-	function onPickFile(input: HTMLInputElement) {
+	async function onPickFile(input: HTMLInputElement) {
 		const file = input.files?.[0];
 		revokeUrl(previewUrl);
 		previewUrl = null;
 		fileName = '';
+		clientError = '';
 
 		if (!file) return;
+		if (file.size > MAX_IMAGE_BYTES) {
+			input.value = '';
+			clientError = `Ukuran gambar maksimal ${MAX_IMAGE_MB}MB. Silakan kompres gambar lalu coba lagi.`;
+			return;
+		}
+		const tempUrl = URL.createObjectURL(file);
+		const img = new Image();
+		const dimensionOk = await new Promise<boolean>((resolve) => {
+			img.onload = () => resolve(img.naturalWidth <= MAX_IMAGE_DIMENSION && img.naturalHeight <= MAX_IMAGE_DIMENSION);
+			img.onerror = () => resolve(false);
+			img.src = tempUrl;
+		});
+		URL.revokeObjectURL(tempUrl);
+		if (!dimensionOk) {
+			input.value = '';
+			clientError = `Dimensi gambar maksimal ${MAX_IMAGE_DIMENSION}x${MAX_IMAGE_DIMENSION}px.`;
+			return;
+		}
 		previewUrl = URL.createObjectURL(file);
 		fileName = file.name;
 	}
@@ -62,6 +86,9 @@
 		action="?/update"
 		enctype="multipart/form-data"
 		class="card"
+		onsubmit={(e) => {
+			if (clientError) e.preventDefault();
+		}}
 		use:enhance={() => {
 			submitting = true;
 			return async ({ update }) => {
@@ -70,6 +97,9 @@
 			};
 		}}
 	>
+		{#if clientError}
+			<div class="banner err" role="alert">{clientError}</div>
+		{/if}
 		{#if repop?.message}
 			<div class="banner err" role="alert">{repop.message}</div>
 		{/if}
@@ -117,7 +147,7 @@
 						<img class="preview" src={data.post.imageUrl} alt="Gambar saat ini" />
 						<div class="drop-meta">
 							<div class="drop-title">Gambar saat ini</div>
-							<div class="drop-sub">Klik area ini untuk ganti gambar (opsional)</div>
+							<div class="drop-sub">Klik area ini untuk ganti gambar (maks 6MB, 4096x4096px)</div>
 						</div>
 					{/if}
 				</label>

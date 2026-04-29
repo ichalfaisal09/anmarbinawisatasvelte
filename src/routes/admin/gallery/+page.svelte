@@ -1,7 +1,45 @@
 <script lang="ts">
 	import { toMediaUrl } from '$lib/media-url';
 
+	const MAX_IMAGE_BYTES = 6 * 1024 * 1024;
+	const MAX_IMAGE_MB = 6;
+	const MAX_IMAGE_DIMENSION = 4096;
+
 	let { data, form } = $props();
+	let clientError = $state('');
+
+	async function validateFileInput(input: HTMLInputElement) {
+		const file = input.files?.[0];
+		clientError = '';
+		if (!file) return true;
+		if (file.size > MAX_IMAGE_BYTES) {
+			input.value = '';
+			clientError = `Ukuran gambar maksimal ${MAX_IMAGE_MB}MB. Silakan kompres gambar lalu coba lagi.`;
+			return false;
+		}
+		const tempUrl = URL.createObjectURL(file);
+		const img = new Image();
+		const dimensionOk = await new Promise<boolean>((resolve) => {
+			img.onload = () => resolve(img.naturalWidth <= MAX_IMAGE_DIMENSION && img.naturalHeight <= MAX_IMAGE_DIMENSION);
+			img.onerror = () => resolve(false);
+			img.src = tempUrl;
+		});
+		URL.revokeObjectURL(tempUrl);
+		if (!dimensionOk) {
+			input.value = '';
+			clientError = `Dimensi gambar maksimal ${MAX_IMAGE_DIMENSION}x${MAX_IMAGE_DIMENSION}px.`;
+			return false;
+		}
+		return true;
+	}
+
+	async function preventOversizeSubmit(e: SubmitEvent) {
+		const formEl = e.currentTarget as HTMLFormElement | null;
+		if (!formEl) return;
+		const input = formEl.querySelector('input[type="file"][name="image"]') as HTMLInputElement | null;
+		if (!input) return;
+		if (!(await validateFileInput(input))) e.preventDefault();
+	}
 </script>
 
 <svelte:head>
@@ -19,10 +57,19 @@
 			{form.message}
 		</div>
 	{/if}
+	{#if clientError}
+		<div class="banner err" role="alert">{clientError}</div>
+	{/if}
 
 	<section class="card">
 		<h2>Tambah foto</h2>
-		<form method="POST" action="?/add" enctype="multipart/form-data" class="stack">
+		<form
+			method="POST"
+			action="?/add"
+			enctype="multipart/form-data"
+			class="stack"
+			onsubmit={preventOversizeSubmit}
+		>
 			<div class="grid">
 				<label>
 					<span>Alt text *</span>
@@ -40,10 +87,15 @@
 				</label>
 				<label>
 					<span>Upload file (opsional)</span>
-					<input name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif" />
+					<input
+						name="image"
+						type="file"
+						accept="image/jpeg,image/png,image/webp,image/gif"
+						onchange={(e) => validateFileInput(e.currentTarget)}
+					/>
 				</label>
 			</div>
-			<p class="hint">Isi salah satu: URL gambar atau upload file baru (maks 6MB).</p>
+			<p class="hint">Isi salah satu: URL gambar atau upload file baru (maks 6MB, 4096x4096px).</p>
 			<button type="submit" class="btn-primary">Tambah foto</button>
 		</form>
 	</section>
@@ -71,7 +123,13 @@
 						<div class="preview">
 							<img src={toMediaUrl(item.imageUrl)} alt={item.alt} loading="lazy" />
 						</div>
-						<form method="POST" action="?/update" enctype="multipart/form-data" class="item-form">
+						<form
+							method="POST"
+							action="?/update"
+							enctype="multipart/form-data"
+							class="item-form"
+							onsubmit={preventOversizeSubmit}
+						>
 							<input type="hidden" name="id" value={item.id} />
 							<div class="grid">
 								<label>
@@ -90,7 +148,12 @@
 								</label>
 								<label>
 									<span>Ganti file (opsional)</span>
-									<input name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif" />
+									<input
+										name="image"
+										type="file"
+										accept="image/jpeg,image/png,image/webp,image/gif"
+										onchange={(e) => validateFileInput(e.currentTarget)}
+									/>
 								</label>
 							</div>
 							<div class="actions">

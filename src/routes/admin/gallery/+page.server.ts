@@ -4,8 +4,7 @@ import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { readGallery, writeGallery } from '$lib/server/gallery-store';
 import { deleteUploadedFile, getWritableUploadsDir, toUploadPublicUrl } from '$lib/server/upload-storage';
-
-const MAX_IMAGE_BYTES = 6 * 1024 * 1024;
+import { validateImageUpload } from '$lib/server/image-validation';
 
 function safeExtFromType(type: string) {
 	const t = type.toLowerCase();
@@ -27,11 +26,10 @@ async function deleteGalleryImageIfExists(imageUrl: string) {
 	await deleteUploadedFile(`gallery/${filename}`);
 }
 
-async function writeGalleryUpload(file: File, ext: string) {
+async function writeGalleryUpload(buffer: Buffer, ext: string) {
 	const uploadsDir = await getWritableUploadsDir('gallery');
 	const filename = `${Date.now()}-${randomUUID().slice(0, 8)}.${ext}`;
 	const absPath = path.join(uploadsDir, filename);
-	const buffer = Buffer.from(await file.arrayBuffer());
 	await writeFile(absPath, buffer);
 	return toUploadPublicUrl(filename, 'gallery');
 }
@@ -59,10 +57,9 @@ export const actions = {
 			if (!ext) {
 				return fail(400, { scope: 'add' as const, message: 'Format gambar harus JPG, PNG, WEBP, atau GIF.' });
 			}
-			if (file.size > MAX_IMAGE_BYTES) {
-				return fail(400, { scope: 'add' as const, message: 'Ukuran gambar maksimal 6MB.' });
-			}
-			imageUrl = await writeGalleryUpload(file, ext);
+			const imageCheck = await validateImageUpload(file);
+			if (!imageCheck.ok) return fail(400, { scope: 'add' as const, message: imageCheck.message });
+			imageUrl = await writeGalleryUpload(imageCheck.buffer, ext);
 		}
 
 		if (!imageUrl) {
@@ -106,10 +103,9 @@ export const actions = {
 			if (!ext) {
 				return fail(400, { scope: 'update' as const, message: 'Format gambar harus JPG, PNG, WEBP, atau GIF.' });
 			}
-			if (file.size > MAX_IMAGE_BYTES) {
-				return fail(400, { scope: 'update' as const, message: 'Ukuran gambar maksimal 6MB.' });
-			}
-			const newUrl = await writeGalleryUpload(file, ext);
+			const imageCheck = await validateImageUpload(file);
+			if (!imageCheck.ok) return fail(400, { scope: 'update' as const, message: imageCheck.message });
+			const newUrl = await writeGalleryUpload(imageCheck.buffer, ext);
 			await deleteGalleryImageIfExists(prev.imageUrl);
 			imageUrl = newUrl;
 		}

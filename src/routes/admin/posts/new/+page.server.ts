@@ -1,11 +1,10 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { readPosts, writePosts } from '$lib/server/posts-store';
 import { getWritableUploadsDir, toUploadPublicUrl } from '$lib/server/upload-storage';
+import { validateImageUpload } from '$lib/server/image-validation';
 import { randomUUID } from 'node:crypto';
 import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
-
-const MAX_IMAGE_BYTES = 6 * 1024 * 1024;
 
 function safeExtFromType(type: string) {
 	const t = type.toLowerCase();
@@ -16,11 +15,10 @@ function safeExtFromType(type: string) {
 	return null;
 }
 
-async function writeUploadedImage(file: File, ext: string) {
+async function writeUploadedImage(buffer: Buffer, ext: string) {
 	const uploadsDir = await getWritableUploadsDir();
 	const filename = `${Date.now()}-${randomUUID()}.${ext}`;
 	const absPath = path.join(uploadsDir, filename);
-	const buffer = Buffer.from(await file.arrayBuffer());
 	await writeFile(absPath, buffer);
 	return toUploadPublicUrl(filename);
 }
@@ -51,9 +49,8 @@ export const actions = {
 		if (!ext) {
 			return fail(400, { message: 'Format gambar harus JPG, PNG, WEBP, atau GIF.', ...repop });
 		}
-		if (file.size > MAX_IMAGE_BYTES) {
-			return fail(400, { message: 'Ukuran gambar maksimal 6MB.', ...repop });
-		}
+		const imageCheck = await validateImageUpload(file);
+		if (!imageCheck.ok) return fail(400, { message: imageCheck.message, ...repop });
 
 		const parsed = parseExpiresAt(expiresAtLocal);
 		if (!parsed.ok) return fail(400, { message: parsed.message, ...repop });
@@ -62,7 +59,7 @@ export const actions = {
 
 		const posts = await readPosts();
 		const nextId = posts.length ? Math.max(...posts.map((p) => p.id)) + 1 : 1;
-		const imageUrl = await writeUploadedImage(file, ext);
+		const imageUrl = await writeUploadedImage(imageCheck.buffer, ext);
 
 		posts.unshift({ id: nextId, title, imageUrl, createdAt, expiresAt: parsed.iso });
 		await writePosts(posts);

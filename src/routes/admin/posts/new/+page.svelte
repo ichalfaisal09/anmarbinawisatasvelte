@@ -2,11 +2,16 @@
 	import { onDestroy } from 'svelte';
 	import { enhance } from '$app/forms';
 
+	const MAX_IMAGE_BYTES = 6 * 1024 * 1024;
+	const MAX_IMAGE_MB = 6;
+	const MAX_IMAGE_DIMENSION = 4096;
+
 	let { form } = $props();
 
 	let createPreviewUrl = $state<string | null>(null);
 	let submitting = $state(false);
 	let createFileName = $state('');
+	let clientError = $state('');
 
 	function revokeUrl(url: string | null) {
 		if (!url) return;
@@ -17,13 +22,32 @@
 		}
 	}
 
-	function setCreatePreviewFromInput(input: HTMLInputElement) {
+	async function setCreatePreviewFromInput(input: HTMLInputElement) {
 		const file = input.files?.[0];
 		revokeUrl(createPreviewUrl);
 		createPreviewUrl = null;
 		createFileName = '';
+		clientError = '';
 
 		if (!file) return;
+		if (file.size > MAX_IMAGE_BYTES) {
+			input.value = '';
+			clientError = `Ukuran gambar maksimal ${MAX_IMAGE_MB}MB. Silakan kompres gambar lalu coba lagi.`;
+			return;
+		}
+		const tempUrl = URL.createObjectURL(file);
+		const img = new Image();
+		const dimensionOk = await new Promise<boolean>((resolve) => {
+			img.onload = () => resolve(img.naturalWidth <= MAX_IMAGE_DIMENSION && img.naturalHeight <= MAX_IMAGE_DIMENSION);
+			img.onerror = () => resolve(false);
+			img.src = tempUrl;
+		});
+		URL.revokeObjectURL(tempUrl);
+		if (!dimensionOk) {
+			input.value = '';
+			clientError = `Dimensi gambar maksimal ${MAX_IMAGE_DIMENSION}x${MAX_IMAGE_DIMENSION}px.`;
+			return;
+		}
 		createPreviewUrl = URL.createObjectURL(file);
 		createFileName = file.name;
 	}
@@ -50,6 +74,9 @@
 		method="POST"
 		enctype="multipart/form-data"
 		class="card"
+		onsubmit={(e) => {
+			if (clientError) e.preventDefault();
+		}}
 		use:enhance={() => {
 			submitting = true;
 			return async ({ update }) => {
@@ -58,6 +85,9 @@
 			};
 		}}
 	>
+		{#if clientError}
+			<div class="banner err" role="alert">{clientError}</div>
+		{/if}
 		{#if form?.message}
 			<div class="banner err" role="alert">{form.message}</div>
 		{/if}
@@ -98,7 +128,7 @@
 					{:else}
 						<div class="drop-empty">
 							<div class="drop-title">Pilih gambar</div>
-							<div class="drop-sub">JPG / PNG / WEBP / GIF (maks 6MB)</div>
+							<div class="drop-sub">JPG / PNG / WEBP / GIF (maks 6MB, 4096x4096px)</div>
 							<div class="drop-hint">Klik area ini untuk memilih file</div>
 						</div>
 					{/if}
